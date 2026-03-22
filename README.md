@@ -14,7 +14,7 @@ This project demonstrates how **state-space search, constraint reasoning, and ad
 
 ---
 
-## 🧪 System Description (Chemical Process)
+##  System Description (Chemical Process)
 
 The plant consists of the following interconnected units:
 
@@ -37,7 +37,7 @@ The plant consists of the following interconnected units:
 
 ---
 
-## ⚙️ System Architecture
+## System Architecture
 Feed → Reactor → Heat Exchanger → Separator → Recycle
 
 
@@ -51,7 +51,7 @@ To strictly comply with **Classical AI**, we implement the following:
 
 ---
 
-### 🔵 1. State-Space Search (A* Algorithm)
+### 1. State-Space Search (A* Algorithm)
 
 **Objective:** Optimize plant startup sequence  
 
@@ -64,7 +64,7 @@ To strictly comply with **Classical AI**, we implement the following:
 
 ---
 
-### 🟢 2. Constraint Satisfaction Problem (CSP)
+### 2. Constraint Satisfaction Problem (CSP)
 
 **Objective:** Identify safe operating region  
 
@@ -85,7 +85,7 @@ To strictly comply with **Classical AI**, we implement the following:
 
 ---
 
-### 🔴 3. Adversarial Search (Minimax + Alpha-Beta)
+### 3. Adversarial Search (Minimax + Alpha-Beta)
 
 **Objective:** Robust control under disturbances  
 
@@ -102,7 +102,7 @@ Disturbances include:
 
 ---
 
-### 🟡 4. Monte Carlo Tree Search (MCTS)
+### 4. Monte Carlo Tree Search (MCTS)
 
 **Objective:** Decision-making under uncertainty  
 
@@ -118,7 +118,7 @@ Disturbances include:
 
 ---
 
-### ⚙️ 5. Baseline PID Controller
+### 5. Baseline PID Controller
 
 Used for comparison against AI-based controllers.
 
@@ -127,7 +127,7 @@ Used for comparison against AI-based controllers.
 
 ---
 
-## 📊 Performance Analysis
+## Performance Analysis
 
 We evaluate controllers on:
 
@@ -136,7 +136,7 @@ We evaluate controllers on:
 - Energy consumption  
 - Overall performance score  
 
-### 📈 Sample Results
+### Sample Results
 
 | Metric | PID | Minimax (Robust) | MCTS (Stochastic) |
 |--------|-----|------------------|-------------------|
@@ -146,7 +146,7 @@ We evaluate controllers on:
 
 ---
 
-## 📊 Visualization Dashboard
+## Visualization Dashboard
 
 The project generates **15+ plots**, including:
 
@@ -161,7 +161,7 @@ The project generates **15+ plots**, including:
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ### 1. Clone the Repository
 ```bash
