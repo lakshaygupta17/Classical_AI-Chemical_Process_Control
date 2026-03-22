@@ -165,7 +165,7 @@ The project generates **15+ plots**, including:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Hamza-Faarooq/classical-ai-chemical-process-control.git
+git clone https://github.com/lakshaygupta17/classical-ai-chemical-process-control.git
 cd classical-ai-chemical-process-control
 ```
 
