@@ -50,7 +50,8 @@ The system models a **Multi-Unit Plant** consisting of:
 3.  **Run Simulation:** `python src/main.py`
 
 ## 👥 Team Details
-* **Muhammad Hamza** (Chemical Engineering, IIT Kharagpur)
-* [Member 2 Name]
-* [Member 3 Name]
-* [Member 4 Name]# Classical_AI-Chemical_Process_Control
+* **Lakshay Gupta** -- 23CH10037 -- (Chemical Engineering, IIT Kharagpur)
+* **Muhammad Hamza** 23CH30019 -- (Chemical Engineering, IIT Kharagpur)
+* **Ayush Goel** - 23CH10092 -- (Chemical Engineering, IIT Kharagpur)
+* **Krishna Rai** - 23CH3FP03 -- (Chemical Engineering, IIT Kharagpur)
+* # Classical_AI-Chemical_Process_Control
