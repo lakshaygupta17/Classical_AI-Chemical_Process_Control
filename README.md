@@ -38,6 +38,8 @@ The project covers:
 
 ## Team Members
 
+Team name: The A*lchemist
+
 | Name | Roll Number | Department |
 |------|-------------|------------|
 | LAKSHAY GUPTA | 23CH10037 | Chemical Engineering |
