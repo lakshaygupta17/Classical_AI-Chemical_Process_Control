@@ -1,96 +1,139 @@
-import numpy as np
-import matplotlib.pyplot as plt
+"""
+main.py
+-------
+Entry point for the Classical AI — Chemical Process Control project.
 
-# Import the modules we just created
-from plant_model import MultiUnitPlant
-from planners import StartupPlanner, CSP
-from controllers import PIDController, MinimaxController, MCTSController
+Runs all four AI techniques and the PID baseline in sequence,
+then produces a full performance comparison.
 
-def simulate_controller(plant, controller, steps=50, mode="pid"):
-    state = (0.8, 420, 5, 2000, 0.5, 0.8)
-    history = {
-        "T": [], "Conversion": [], "Purity": [], "Energy": [], "Score": []
-    }
-    
-    for _ in range(steps):
-        if mode == "pid":
-            state = controller.control(state)
-        elif mode == "minimax":
-            action = controller.best_action(state)
-            if action:
-                state = plant.plant_step(state, action)
-        elif mode == "mcts":
-            state = controller.run(state)
-            
-        CA, T, F, Q, R, purity = state
-        conversion = 1 - (CA / plant.CA0)
-        
-        history["T"].append(T)
-        history["Conversion"].append(conversion)
-        history["Purity"].append(purity)
-        history["Energy"].append(Q)
-        history["Score"].append(plant.evaluate(state))
-        
-    return history
+Usage:
+    python src/main.py
+"""
 
-def compute_metrics(history):
-    return {
-        "Avg Temperature": np.mean(history["T"]),
-        "Avg Conversion": np.mean(history["Conversion"]),
-        "Avg Purity": np.mean(history["Purity"]),
-        "Avg Energy": np.mean(history["Energy"]),
-        "Final Score": history["Score"][-1],
-        "Max Temperature": max(history["T"]),
-        "Min Conversion": min(history["Conversion"]),
-        "Std Temperature": np.std(history["T"])
-    }
+from plant               import MultiUnitPlant
+from startup_planner     import StartupPlanner
+from csp_solver          import OperatingPointCSP
+from minimax_controller  import MinimaxController
+from mcts_controller     import MCTSController
+from pid_controller      import PIDController
+from simulation          import (
+    simulate_controller,
+    compute_metrics,
+    compare_controllers,
+    DEFAULT_INITIAL_STATE,
+)
+from visualisation import (
+    plot_comparison,
+    plot_dashboard,
+    plot_all_metrics,
+)
 
-def plot_metric(data, title, ylabel):
-    plt.figure()
-    plt.plot(data)
-    plt.title(title)
-    plt.xlabel("Time Step")
-    plt.ylabel(ylabel)
-    plt.show()
+
+def main():
+
+    print("=" * 60)
+    print("  Classical AI for Chemical Process Control")
+    print("=" * 60)
+
+    # ---------------------------------------------------------------- #
+    # 1. Plant Initialisation
+    # ---------------------------------------------------------------- #
+    plant         = MultiUnitPlant()
+    initial_state = DEFAULT_INITIAL_STATE
+    print(f"\nInitial state: {initial_state}")
+    print(f"Initial score: {plant.evaluate(initial_state):.4f}")
+    print(f"Initial safe:  {plant.safe(initial_state)}")
+
+    # ---------------------------------------------------------------- #
+    # 2. A* Startup Planner
+    # ---------------------------------------------------------------- #
+    print("\n" + "=" * 60)
+    print("  [1/4] A* STARTUP SEQUENCING")
+    print("=" * 60)
+    planner      = StartupPlanner()
+    startup_seq  = planner.search()
+    print(f"Optimal startup order: {startup_seq}")
+
+    # ---------------------------------------------------------------- #
+    # 3. CSP Operating Point Selection
+    # ---------------------------------------------------------------- #
+    print("\n" + "=" * 60)
+    print("  [2/4] CSP — SAFE OPERATING POINT")
+    print("=" * 60)
+    csp      = OperatingPointCSP()
+    solution = csp.backtrack()
+    print(f"One feasible operating point: {solution}")
+
+    all_solutions = csp.find_all_solutions(limit=5)
+    print(f"First 5 feasible solutions:")
+    for i, s in enumerate(all_solutions, 1):
+        print(f"  {i}. {s}")
+
+    # ---------------------------------------------------------------- #
+    # 4. Minimax — Best Action from Initial State
+    # ---------------------------------------------------------------- #
+    print("\n" + "=" * 60)
+    print("  [3/4] MINIMAX — ROBUST CONTROL ACTION")
+    print("=" * 60)
+    minimax          = MinimaxController(plant, depth=3)
+    action, mm_value = minimax.best_action(initial_state)
+    print(f"Best action (adversarial): {action}  (minimax value: {mm_value:.4f})")
+
+    # ---------------------------------------------------------------- #
+    # 5. MCTS — Best Next State
+    # ---------------------------------------------------------------- #
+    print("\n" + "=" * 60)
+    print("  [4/4] MCTS — STOCHASTIC OPTIMISATION")
+    print("=" * 60)
+    mcts       = MCTSController(plant, simulations=200)
+    best_state = mcts.run(initial_state)
+    print(f"Best state found by MCTS: {best_state}")
+    print(f"Score: {plant.evaluate(best_state):.4f}  Safe: {plant.safe(best_state)}")
+
+    # ---------------------------------------------------------------- #
+    # 6. Controller Comparison — Full Simulation
+    # ---------------------------------------------------------------- #
+    print("\n" + "=" * 60)
+    print("  CONTROLLER COMPARISON (50 steps each)")
+    print("=" * 60)
+
+    pid = PIDController(plant)
+
+    print("Simulating PID...")
+    pid_hist = simulate_controller(plant, pid, steps=50, mode="pid")
+
+    print("Simulating Minimax...")
+    minimax_hist = simulate_controller(plant, minimax, steps=50, mode="minimax")
+
+    print("Simulating MCTS...")
+    mcts_hist = simulate_controller(plant, mcts, steps=50, mode="mcts")
+
+    # Metrics
+    pid_metrics     = compute_metrics(pid_hist)
+    minimax_metrics = compute_metrics(minimax_hist)
+    mcts_metrics    = compute_metrics(mcts_hist)
+
+    compare_controllers(pid_metrics, minimax_metrics, mcts_metrics)
+
+    # ---------------------------------------------------------------- #
+    # 7. Plots
+    # ---------------------------------------------------------------- #
+    print("Generating plots...")
+    histories = {"PID": pid_hist, "Minimax": minimax_hist, "MCTS": mcts_hist}
+
+    # Comparison overlays (one per metric)
+    for metric in ["T", "Conversion", "Purity", "Energy", "Score"]:
+        plot_comparison(histories, metric, save=True)
+
+    # Full dashboard
+    plot_dashboard(pid_hist, minimax_hist, mcts_hist, save=True)
+
+    # Individual plots (15 total)
+    plot_all_metrics(pid_hist, minimax_hist, mcts_hist, save=True)
+
+    print("\nAll plots saved to results/")
+    print("Done.")
+
 
 if __name__ == "__main__":
-    plant = MultiUnitPlant()
-    initial_state = (0.8, 420, 5, 2000, 0.5, 0.8)
-    
-    print("\n===== STARTUP PLANNER (A*) =====")
-    planner = StartupPlanner()
-    plan = planner.search()
-    print("Startup Order:", plan)
-    
-    print("\n===== CSP SAFE OPERATING POINT =====")
-    csp = CSP()
-    solution = csp.backtrack()
-    print("One Feasible Solution:", solution)
-    
-    print("\n===== MINIMAX ROBUST CONTROL =====")
-    minimax = MinimaxController(plant)
-    action = minimax.best_action(initial_state)
-    print("Best Action (Adversarial):", action)
-    
-    print("\n===== MCTS STOCHASTIC OPTIMIZATION =====")
-    mcts = MCTSController(plant)
-    best_state = mcts.run(initial_state)
-    print("Best State (MCTS):", best_state)
-    
-    print("\n===== RUNNING CONTROLLER COMPARISON =====")
-    pid = PIDController(plant)
-    
-    pid_hist = simulate_controller(plant, pid, mode="pid")
-    minimax_hist = simulate_controller(plant, minimax, mode="minimax")
-    mcts_hist = simulate_controller(plant, mcts, mode="mcts")
-    
-    pid_metrics = compute_metrics(pid_hist)
-    minimax_metrics = compute_metrics(minimax_hist)
-    mcts_metrics = compute_metrics(mcts_hist)
-    
-    print("\nPID Metrics:", pid_metrics)
-    print("\nMinimax Metrics:", minimax_metrics)
-    print("\nMCTS Metrics:", mcts_metrics)
-    
-    # Plotting an example (PID Temperature)
-    plot_metric(pid_hist["T"], "PID Temperature", "Temperature (K)")
+    main()
