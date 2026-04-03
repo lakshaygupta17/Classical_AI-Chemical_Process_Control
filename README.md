@@ -40,12 +40,10 @@ The project covers:
 
 | Name | Roll Number | Department |
 |------|-------------|------------|
-| Student Name 1 | Roll No. 1 | Department |
-| Student Name 2 | Roll No. 2 | Department |
-| Student Name 3 | Roll No. 3 | Department |
-| Student Name 4 | Roll No. 4 | Department |
-
-> *(Update with actual names and roll numbers before submission)*
+| LAKSHAY GUPTA | 23CH10037 | Chemical Engineering |
+| MUHAMMAD HAMZA | 23CH30019 | Chemical Engineering |
+| AYUSH GOEL | 23CH10092 | Chemical Engineering |
+| KRISHNA RAI | 23CH3FP03 | Chemical Engineering |
 
 ---
 
