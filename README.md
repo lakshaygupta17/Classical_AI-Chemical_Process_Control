@@ -1,7 +1,6 @@
 # Classical AI for Chemical Process Control
 
 > **Course Project** — Applying Classical Artificial Intelligence techniques to autonomous control, startup planning, and constraint-based optimisation of a multi-unit chemical process plant.
-
 ---
 
 ## Table of Contents
