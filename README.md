@@ -280,13 +280,13 @@ Controllers are compared over 50 simulation steps starting from `state = (CA=0.8
 
 | Metric | PID | Minimax | MCTS |
 |--------|-----|---------|------|
-| Avg Temperature (K) | — | — | — |
-| Avg Conversion | — | — | — |
-| Avg Purity | — | — | — |
-| Avg Energy (W) | — | — | — |
-| Final Score | — | — | — |
-| Max Temperature (K) | — | — | — |
-| Std Temperature | — | — | — |
+| Avg Temperature (K) | 362.8 | 382.57 | 396.81 |
+| Avg Conversion | 0.4954 | 0.827 | 0.8589 |
+| Avg Purity | 0.7097 | 0.9121 | 0.9299 |
+| Avg Energy (W) | 4759.6 | 193.3 | 516.7 |
+| Final Score | 1.6582 | 12.7386 | 12.7679 |
+| Max Temperature (K) | 415.38 | 415.91 | 416.44 |
+| Std Temperature | 15.33 | 9.17 | 7.17 |
 
 > *(Populate with actual values after running the simulation)*
 
